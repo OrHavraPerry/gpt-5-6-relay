@@ -1,51 +1,45 @@
-# GPT-5.6 Relay
+# GPT-5.6 Relay + Agentic Executer
 
-A public Codex skill for routing one task through model-specific GPT-5.6 child threads.
+Opinionated fork of [Forward-Future/gpt-5-6-relay](https://github.com/Forward-Future/gpt-5-6-relay). It packages two Codex skills:
 
-The relay gives each phase to the model and reasoning effort that fit it best, while preserving visible thread history and concrete handoffs:
-
-```text
-Sol coordinator
-    -> Terra implementation
-    -> Sol review
-    -> Luna release
-```
-
-The route adapts to the task. Small mechanical work may use only Luna. Ambiguous architecture may stay with Sol longer. Deployment is always a separate, authorized Luna phase.
+- `gpt-5-6-relay`: routes work through persistent GPT-5.6 child tasks with explicit gates and model/effort choices.
+- `agentic-executer`: makes each delegated child own execution, verification, repair loops, and terminal notification.
 
 ## Install
 
-Copy `.agents/skills/gpt-5-6-relay/` into a project that supports Codex project skills. Then invoke it explicitly:
+Copy both skill directories into a Codex project's `.agents/skills/` directory:
 
 ```text
-Invoke /gpt-5-6-relay with this task: <task>
+.agents/skills/
+├── agentic-executer/
+└── gpt-5-6-relay/
 ```
 
-The skill uses Codex app thread tools to create visible child threads with explicit model and reasoning settings. It does not use hidden subprocesses.
+For personal installation, copy both directories into your Codex skills directory instead.
 
-## Model routing
+## Use
 
-| Model | Best fit | Relay starting effort |
-| --- | --- | --- |
-| Sol | Planning, architecture, ambiguity, hard diagnosis | Extra High |
-| Terra | Implementation, tests, bounded debugging | High |
-| Luna | Reconnaissance, mechanical checks, release execution | Light or Medium |
+Invoke the relay with a concrete task:
 
-The user-facing effort levels are Light, Medium, High, Extra High, and Ultra. Sol and Terra support all five; Luna supports all except Ultra. Ultra enables automatic delegation on Sol and Terra, so the relay normally stops at Extra High and uses Ultra only when nested delegation is intentional.
+```text
+Use $gpt-5-6-relay to implement and verify: <task>
+```
 
-## What the skill guarantees
+The relay loads `$agentic-executer` in every child task. Install both skills together.
 
-- Each child thread has one role, one deliverable, and one checkable gate.
-- A dependent child is not started until its required artifact exists.
-- Corrections stay in the same child thread; changing model responsibility creates a new child.
-- Only one thread writes to a checkout at a time.
-- Deployment follows the repository's clean integrated-main rules in `DEPLOYMENT.md`.
-- The final report names the actual thread IDs, models, efforts, artifacts, checks, and deployment evidence.
+## Routing policy
+
+- Luna High handles normal implementation, testing, review, research, release, and mechanical work.
+- Luna Extra High handles bounded work with substantial branching or subtle invariants.
+- Sol handles genuinely open-ended architecture, hard diagnosis, high-risk decisions, and systems review triggers.
+- Terra substitutes only when Luna is unavailable.
+
+Child tasks are persistent and user-visible. Handoffs are event-driven: children notify the parent when blocked or finished instead of being polled.
 
 ## Requirements
 
-The host must expose Codex app tools for listing projects, creating threads, reading threads, and sending background messages with model and effort controls. If those controls are unavailable, the skill reports the proposed route instead of pretending that model routing happened.
+Host Codex app must expose project listing, task creation, task reading, and background task messaging with model and effort controls. Relay reports proposed route and stops when these controls are unavailable.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Original project copyright and fork lineage remain available through Git history.

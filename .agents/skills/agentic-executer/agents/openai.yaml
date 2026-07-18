@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Executer"
+  short_description: "Own delegated execution through verified completion"
+  default_prompt: "Use $agentic-executer to execute this delegated task through verified completion and notify the parent when done or blocked."
