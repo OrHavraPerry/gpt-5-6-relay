@@ -1,8 +1,8 @@
 # Luna deployment
 
-Use this branch only when the user authorized deployment. Create a Luna Medium child thread to execute the settled release plan; it does not invent one during deployment. If production evidence invalidates the plan, stop the release and return the evidence to the Sol coordinator, which may create or continue a Terra remediation thread.
+Use this branch only when the user authorized deployment. Luna Medium may execute a settled, mechanically checked release plan; it does not invent one during deployment. Choose parent execution or an in-process worker under the router gates. Create or reuse a persistent child only when the user has explicitly authorized that task. The parent owns release judgment and obtains the independent frontier-review required by SKILL.md. If production evidence invalidates the plan, stop the release and return evidence to the parent; remediation follows the routing and task-creation gates.
 
-When the user says `deploy`, commit and land only the relay's authorized task changes, then deploy affected services from the newest `origin/main` revision containing that commit.
+Before committing, landing, or deploying release changes, the required independent frontier-review must pass. When the user says `deploy`, commit and land only the current task's authorized changes, then deploy affected services from the newest `origin/main` revision containing that commit.
 
 1. Use the repository's shared deployment lock and wait for any active deployment to finish.
 2. After acquiring the lock, discard previously selected revisions and fetch again.

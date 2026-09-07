@@ -1,8 +1,8 @@
-# GPT-5.6 Relay + Agentic Executer
+# Codex Task Router + Agentic Executer
 
 Opinionated fork of [Forward-Future/gpt-5-6-relay](https://github.com/Forward-Future/gpt-5-6-relay). It packages two Codex skills:
 
-- `gpt-5-6-relay`: routes work through persistent GPT-5.6 child tasks with explicit gates and model/effort choices.
+- `gpt-5-6-relay`: chooses parent execution, in-process agents, or explicitly authorized persistent tasks, with GPT-6 Astra and GPT-5.6 model/effort routing.
 - `agentic-executer`: makes each delegated child own execution, verification, repair loops, and terminal notification.
 
 ## Install
@@ -25,20 +25,23 @@ Invoke the relay with a concrete task:
 Use $gpt-5-6-relay to implement and verify: <task>
 ```
 
-The relay loads `$agentic-executer` in every child task. Install both skills together.
+Persistent Relay children load `$agentic-executer` from the sibling skill directory. Install both skills together. Invoking the router alone does not authorize new persistent tasks.
 
 ## Routing policy
 
-- Luna High handles normal implementation, testing, review, research, release, and mechanical work.
-- Luna Extra High handles bounded work with substantial branching or subtle invariants.
-- Sol handles genuinely open-ended architecture, hard diagnosis, high-risk decisions, and systems review triggers.
-- Terra substitutes only when Luna is unavailable.
+- Choose model and effort together by total cost per accepted result after quality and risk requirements are met. Include retries, tools, repair, review, and coordination.
+- Luna Extra High handles bounded coding and short-source synthesis; Medium handles deterministic volume.
+- Terra handles broader synthesis and ambiguous implementation with useful acceptance checks.
+- Sol remains useful where validated cost-quality results justify it.
+- Astra handles hard execution and frontier judgment. Start at Medium for general complex work or High for hard terminal work; use Low when relevant evidence and checks support it. Higher effort is not automatically better.
 
-Child tasks are persistent and user-visible. Handoffs are event-driven: children notify the parent when blocked or finished instead of being polled.
+Keep the smallest effective topology. Persistent tasks require an explicit user request; independent bounded work normally uses in-process agents. Preserve one writer per checkout and independent review for consequential work. Persistent handoffs are event-driven.
+
+See the skill's [routing policy](.agents/skills/gpt-5-6-relay/SKILL.md) and dated [benchmark evidence](.agents/skills/gpt-5-6-relay/references/model-evidence.md). API dollar estimates do not establish Codex credit costs. The existing skill name stays unchanged for compatibility.
 
 ## Requirements
 
-Host Codex app must expose project listing, task creation, task reading, and background task messaging with model and effort controls. Relay reports proposed route and stops when these controls are unavailable.
+Parent execution uses the current task's tools. In-process delegation requires collaboration tools. Persistent Relay additionally requires project/task creation, task reading, terminal messaging, and event-driven wait controls. Check the selected host's model and effort support. Report a missing required gate rather than silently substituting a weaker model or different topology.
 
 ## License
 

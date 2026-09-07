@@ -52,12 +52,12 @@ When a review finds actionable defects, return exact evidence and a failing verd
 
 Terminal notification is mandatory for relay work.
 
-1. For a persistent Codex relay thread, call `codex_app__send_message_to_thread` with the exact parent Codex thread ID supplied in the brief. Do not use collaboration-agent messaging, a generic notify-parent helper, or the child final response as a substitute.
+1. For a persistent Codex relay thread, call the runtime-resolved background task messaging capability named in the brief with the exact parent Codex thread ID supplied there. Do not assume a provider namespace. Do not use collaboration-agent messaging, a generic notify-parent helper, or the child final response as a substitute.
 2. Send this message before the child final response. Begin it with one terminal status (`DONE`, `DONE_WITH_CONCERNS`, or `BLOCKED`) and include `Protocol: agentic-executer loaded`.
 3. Do this in addition to the child task's final response; never assume the final response is surfaced automatically.
 4. Send no routine parent notifications unless the brief requests them.
 5. Include status, deliverables or blocker, checks and results, remaining risks, and the next owner action.
-6. If `codex_app__send_message_to_thread` is unavailable or fails, retry it once when the failure is plausibly transient. Then begin the child final response with `NOTIFICATION_FAILED`, include the exact parent thread ID and error, and do not claim the relay phase was successfully handed off.
+6. If the brief's named messaging capability is unavailable or fails, retry it once when the failure is plausibly transient. Then begin the child final response with `NOTIFICATION_FAILED`, include the exact parent thread ID and error, and do not claim the relay phase was successfully handed off.
 
 Use one terminal status:
 
