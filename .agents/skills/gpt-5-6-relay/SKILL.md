@@ -142,7 +142,7 @@ Do not pass summary as substitute for actual artifact. Parent checks output agai
 
 When Relay gate passes:
 
-1. Resolve actual callable project, task creation, task reading, background task messaging, event-wait, model, and effort controls before creation.
+1. Resolve actual callable project, task creation, task reading, background task messaging, event-wait, model, and effort controls before creation. Record which creation result is terminal (`threadId`) and which is only queued (`clientThreadId`); tool schemas, not an assumed ID format, decide this.
 2. Record exact parent task ID and prove child-to-parent terminal delivery channel before mutation. Do not hard-code provider namespace.
 3. Resolve project ID for repository work; use projectless target otherwise.
 4. Record branch, revision, and dirty files before repository mutation.
@@ -153,6 +153,20 @@ When Relay gate passes:
 9. Require terminal handoff through runtime-resolved background task messaging capability to exact parent task ID before child final response.
 10. Wait through runtime-resolved event-driven task wait capability. Do not poll or babysit.
 11. Read completed child once, verify artifact, then continue route.
+
+### Queued child creation and identity recovery
+
+`clientThreadId` confirms request acceptance, not a usable task identity. Keep that receipt, creation time, requested title/target, and one-child lease. Never pass it to a `threadId`-only tool, convert it into a guessed ID, or create a replacement merely because it is not in a recency-limited `list_threads` result.
+
+Treat `list_threads` as a discovery hint only. Its pagination, recency ordering, host scope, and worktree setup timing do not prove queued child absence, failure, completion, or cancellation. Do one bounded, documented discovery attempt only when a supported tool can resolve the receipt; do not repeatedly expand listing limits or poll listings.
+
+When an exact `threadId` is returned by a supported creation/status tool or supplied by the user from an authoritative task link, bind it to the existing queued receipt and use event-driven `wait_threads` plus one terminal `read_thread`. A supplied ID is evidence to monitor, not permission to create another worker. Verify it matches known title, target, host, or creation timing before reporting its result; reject an unmatched ID and retain the unresolved receipt. A timed-out or nonterminal `wait_threads` result remains active or unknown, never `complete` or `failed`.
+
+If no supported control resolves a queued receipt, status is `queued identity unresolved`, not `BLOCKED`, `failed`, or `complete`. Preserve accountability: retain the single-worker lease, report the receipt and recovery path, and resume only when an authoritative task link or supported status result supplies a matching exact ID. Do not call a child event-wait or poll a listing with only a `clientThreadId`. Report `BLOCKED` only from explicit creation/status failure, a verified terminal child failure after its required notification attempt, or a demonstrated inability to meet a required gate after supported recovery paths. Before any retry, prove original request failed or was canceled; otherwise reuse it.
+
+After a child reaches a verified terminal state, including failure, require its terminal parent notification attempt through runtime-resolved capability to the exact parent ID before releasing the lease. Retain the lease when delivery is not accepted. A missing notification is a handoff failure, not evidence that the child never ran.
+
+Run `scripts/check_queued_relay_lifecycle.py` after changing this lifecycle guidance. It covers accepted queued receipts, omitted active listings, authoritative supplied IDs, explicit failures, duplicate prevention, and terminal notification.
 
 Relay brief must add:
 
