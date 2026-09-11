@@ -35,6 +35,8 @@ Keep work in current task only when all earlier gates fail and one of these appl
 
 Do not classify a task as parent-only merely because each independent branch is individually small. Estimate topology from the whole request. Use available parent tools directly when sufficient and no named model, effort, or independent-review gate needs enforcement.
 
+Actionable local setup, launch, playtest preparation, or test execution is not parent-only solely because it is small or sequential. When the parent model/effort is not confirmed to meet an applicable routing preference, use one model-routed in-process worker: Luna Extra High for bounded, known setup with clear acceptance checks; Terra Medium for broad or uncertain setup, dependency state, or recovery. Keep parent-only for truly trivial/read-only checks or deterministic commands when the parent setting satisfies that route. This selects an in-process worker; it never grants authority to create a persistent task.
+
 ### In-process sub-agents
 
 Use collaboration sub-agents by default when at least two useful workstreams are independent, bounded, separately verifiable, clear the coordination-cost gate, and need no durable user-visible task record. Also use one in-process worker when substantive work needs a named model or effort that the parent runtime does not confirm. Good fits:
