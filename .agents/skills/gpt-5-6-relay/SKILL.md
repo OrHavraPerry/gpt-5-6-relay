@@ -5,7 +5,7 @@ description: Route Codex tasks across parent execution, in-process agents, and e
 
 # Codex Task Router and Relay
 
-Choose topology, model, and effort separately, then make the choice executable. Delegate only when reduced wall time, cleaner context, independent verification, model enforcement, persistence, or isolation exceeds coordination cost. Benefits never grant authority to create a user-visible persistent task; that requires explicit user request.
+Choose topology, model, and effort separately, then make the choice executable. Delegate only when reduced wall time, cleaner context, independent verification, model enforcement, persistence, or isolation exceeds coordination cost. Benefits never grant authority to create a user-visible persistent task; that requires explicit user request. Coordinator owns user intent, the evidence brief, any hard-task consultation, review deduplication, and final verification.
 
 Keep parent responsible for scope, canonical state, verification, and final answer under every topology. Routine choices within authorized scope do not require new permission. Continue unaffected work while consequential input is pending; preserve the original objective when the user steers the task. Complete focused acceptance checks, then broaden testing only for new failures, changes, or unresolved concerns.
 
@@ -84,7 +84,7 @@ Choose the model-effort pair with the lowest expected total cost that meets the 
 
 First check whether runtime surfaces the current parent model and effort. If they satisfy the route, the parent may execute. Otherwise use a model-controlled in-process worker when substantive work clears coordination cost. Do not delegate merely to imitate a cheaper switch when context transfer and waiting erase the benefit. An explicit model requirement still applies. For trivial work whose parent settings are unknown, report `inherited, not surfaced`; never claim a named model or effort without runtime evidence.
 
-Choose the coordinator separately from execution and review. Routine coordination starts at Terra Medium when settings are controllable; use Astra only for a named difficult decision, not task count or waiting. Preserve explicit model/effort requirements. Inherited Astra High or Extra High is observed state, not a cost justification. If no callable control can change the current parent, state that limitation once, keep coordination compact, and route substantive work appropriately. Do not create a proxy coordinator, duplicate workers, or a persistent task merely to simulate lowering the parent's cost. Child model changes do not change the parent.
+Choose the coordinator separately from execution and review. User chooses the conversation model in the app; parent reports the actual runtime model/effort and cannot claim to have changed it. Terra is the default for coordination and clear execution, Astra for ongoing context-heavy hard conversation judgment or a named difficult decision, and Luna for narrow, verifiable work, subject to availability and exact requirements. Preserve explicit model/effort requirements. Inherited Astra High or Extra High is observed state, not a cost justification. If no callable control can change the current parent, state that limitation once, keep coordination compact, and route substantive work appropriately. Do not create a proxy coordinator, duplicate workers, or a persistent task merely to simulate lowering the parent's cost. Child model changes do not change the parent.
 
 Use these starting routes when comparable local results are absent. They are workload defaults, not universal benchmark rankings:
 
@@ -96,6 +96,42 @@ Use these starting routes when comparable local results are absent. They are wor
 | Astra (`gpt-6-astra`) | Hard coding/terminal execution, difficult diagnosis, demanding browser/visual workflows, frontier judgment, conflicting evidence and costly-to-reverse work | Medium for general complex work; High for hard terminal work; Low when relevant evidence and checks support the lower-cost route |
 
 For cost-quality evidence, runtime/API differences, or revising these defaults, read [references/model-evidence.md](references/model-evidence.md). Do not load it or browse on every routine turn. Refresh when asked, when availability/pricing changes, or when observed acceptance invalidates a route. Keep API dollars separate from Codex credits.
+
+### Conditional Astra consultation
+
+Coordinator decides whether to consult Astra inside this ordered route. Consultation is advisory: it cannot widen user scope, create a persistent task, override exact model/effort or authority requirements, or satisfy a required independent review.
+
+Use objective unresolved planning or judgment signals from task facts, rather than task count, model preference, or review status alone. Signals include ongoing context-heavy conversation requiring nuanced judgment, unresolved ambiguity or conflicting evidence, long-context source comparison with material uncertainty, coupled systems or costly-to-reverse decisions, and a hard question that a worker cannot settle with its available evidence. Security, legal, financial, publication, deployment, and other review-gated stakes require their existing independent review gate; those stakes alone do not require extra planning consultation. If the request is straightforward, bounded, deterministic, and has no unresolved hard signal, use the simple bypass and skip consultation.
+
+When a hard signal exists, coordinator owns a compact consultation brief with all fields below:
+
+```markdown
+Question: <actual question to settle>
+Constraints: <scope, authority, safety, time, and output limits>
+Verified facts: <facts established by supplied evidence>
+Uncertainties/conflicts: <unknown, missing, stale, or disagreeing evidence>
+Original sources: <raw paths, URLs, or attached artifacts; mark unavailable sources>
+Acceptance: <observable decision or checks that prove usefulness>
+```
+
+Original sources remain the evidence base. Missing or inaccessible evidence does not prevent Astra from identifying what must be inspected or requested, but it must be labeled. Astra may inspect or request missing raw evidence when tools and authority allow; a summary, assumption, or invented source access cannot replace evidence necessary for the decision. If the missing fact materially changes the decision, preserve the uncertainty and ask the parent or user for the source or clarification before claiming completion.
+
+Coordinator deduplicates consultations across the active phase. Reconsult only when material new evidence or conflict changes or could invalidate the prior decision, or when a genuinely unresolved difficulty remains after the prior consultation and coordinator names what remains unresolved and why another bounded pass can help. Do not repeat the same question without progress, reconsult for routine progress, or duplicate a review. Request a short, actionable visible return without chain-of-thought or hidden reasoning and without a fixed hard clip that can cut conditions or evidence. Visible brevity does not guarantee lower reasoning, tool, or review cost, and API prices do not establish Codex-credit savings. The return should provide, as useful:
+
+```markdown
+Decision/rationale: <recommended route and why>
+Assumptions/conditions: <what must hold; never a substitute for required evidence>
+Boundaries/dependencies: <scope and prerequisites>
+Execution roles/models subject to gates: <coordinator, worker, reviewer, model, effort>
+Unresolved issues: <remaining uncertainty or user input>
+Completion checks: <how parent verifies the result>
+```
+
+Coordinator checks the consultation against the brief and existing gates. A concrete hard signal may route bounded execution directly to Astra; a cheap Luna or Terra failure is not required first. Record Astra's specific unresolved difficulty, model/effort, bounded scope, and exit condition. At each phase boundary, downshift finished or remaining narrow work to Luna Extra High or Terra Medium when its workload fits. Retain Astra when execution is inseparable from the hard judgment or transfer cost exceeds expected savings, and state that reason.
+
+Required review stays separate. Planner/consultation author cannot be the exact Astra reviewer, and consultation output cannot replace frontier-review or any other required independent review. Coordinator deduplicates overlapping consultation and review requests while preserving both gates. A worker with a difficult question or review need asks coordinator; it does not create a private Astra tree.
+
+Parent verifies finished worker output against acceptance and repairs substantive gaps only; routine rewriting for style is unnecessary. Parent remains accountable for intent, runtime model/app state, authority, and final verification. Consultation never creates unauthorized persistent work or claims a cost saving.
 
 ### Astra execution and phase boundaries
 
