@@ -11,13 +11,13 @@ Keep parent responsible for scope, canonical state, verification, and final answ
 
 For every non-trivial task, apply gates in this order:
 
-1. explicit authority for persistent Relay;
+1. persistent Relay authorization eligibility;
 2. required independent review;
 3. two or more independent bounded workstreams;
-4. one model-routed in-process worker when named model or effort materially matters;
+4. one in-process worker for independently ownable bounded work when coordination benefit exceeds cost, or when named model or effort materially matters;
 5. parent-only fallback.
 
-Earlier gates win. A parent-only convenience condition must not veto an eligible earlier gate. In first commentary, state concrete route and reason, for example `Route: two in-process workers — local inventory and upstream verification are independent`. Do not merely say the router was loaded.
+Gate 1 is eligibility, not an automatic winner. Honor an explicit request for another task, Relay, background work, or durable delegation even when task is small. When prior authorization covers a broader route rather than an exact task, choose persistent Relay only if substantial independent work benefits from persistence, its own lifecycle, or checkout isolation. A separate task is not otherwise needed for nested delegation or model switching. After eligibility, apply remaining gates and choose smallest route that meets work. A parent-only convenience condition must not veto a required review or useful independent workstream. In first commentary, state concrete route and reason, for example `Route: two in-process workers — local inventory and upstream verification are independent`. Do not merely say the router was loaded.
 
 ## 1. Choose execution topology
 
@@ -39,7 +39,7 @@ Actionable local setup, launch, playtest preparation, or test execution is not p
 
 ### In-process sub-agents
 
-Use collaboration sub-agents by default when at least two useful workstreams are independent, bounded, separately verifiable, clear the coordination-cost gate, and need no durable user-visible task record. Also use one in-process worker when substantive work needs a named model or effort that the parent runtime does not confirm. Good fits:
+Use collaboration sub-agents by default for substantive bounded work that can be independently owned and verified without a durable user-visible task record. Prefer one worker for a sequential bounded phase; add workers only when workstreams are independent, separately verifiable, and clear coordination cost. Also use one in-process worker when substantive work needs a named model or effort that the parent runtime does not confirm. Good fits:
 
 - parallel read-only research or repository exploration;
 - easy internet search, source collection, and extraction that can run independently while the parent handles complex actions or synthesis;
@@ -54,7 +54,7 @@ When a request combines easy internet collection with complex parent work, split
 
 Use centralized coordination: parent assigns concrete outputs, agents return evidence, parent synthesizes and verifies. Avoid peer-to-peer chatter.
 
-Do not use multiple sub-agents for one sequential chain, shared-state debugging where every step depends on prior findings, or overlapping writes. A single model-routed worker may own a sequential chain when the model/effort gate clears coordination cost. All collaboration agents share current filesystem. Exactly one automated mutating owner may hold a checkout, counting parent and every child. Parent performs no writes while child owns checkout. A second writer requires separate worktree plus isolated ports, databases, generated outputs, and processes; if that isolation is unavailable, serialize writes. Snapshot branch, revision, status, and dirty paths before lease, declare owned paths, and pause integration on unexpected drift. Read-only reviewers receive no writer lease. Inspect current concurrency limit before fan-out; prefer one to three children over a swarm.
+Do not use multiple sub-agents for one sequential chain, shared-state debugging where every step depends on prior findings, or overlapping writes. A single model-routed worker may own a sequential chain when the model/effort gate clears coordination cost. Children may subdelegate only when runtime support and shared-tree concurrency allow it, their owner retains accountability, the brief names the boundary, and no ownership can collide. Do not create unbounded recursive fan-out. All collaboration agents share current filesystem. Exactly one automated mutating owner may hold a checkout, counting parent and every descendant. Parent performs no writes while child owns checkout. A second writer requires a separate worktree. A worktree isolates a checkout only: explicitly isolate ports, databases, generated outputs, and processes too, or serialize writes. Snapshot branch, revision, status, and dirty paths before lease, declare owned paths, and pause integration on unexpected drift. Read-only reviewers receive no writer lease. Inspect current concurrency limit before fan-out; prefer one to three children over a swarm.
 
 Context rules:
 
@@ -62,11 +62,11 @@ Context rules:
 - use full-history forks only when the child genuinely needs full conversation and inherited model settings are acceptable;
 - give raw artifacts, paths, constraints, and acceptance checks instead of conclusions;
 - create fresh agents for independent review; reuse an agent for repair of its own phase;
-- avoid nested delegation unless user requests it and scopes cannot collide.
+- permit nested delegation only when runtime support and shared-tree concurrency allow it, its owner remains accountable, the brief declares the subdelegation boundary and return contract, and no ownership can collide.
 
 ### Persistent Codex Relay
 
-Create or fork persistent child tasks only when user explicitly requests another task, Relay, background or standalone scheduled work, or durable delegation. Risk, auditability, isolation, worktree need, or expected duration alone never authorizes user-visible task creation. Without explicit authorization, Relay is not an eligible topology: choose parent-only or in-process sub-agents, or report that required persistence is blocked when no safe alternative exists. After explicit authorization, Relay fits when one or more applies:
+Create or fork persistent child tasks only when user explicitly requests another task, Relay, background or standalone scheduled work, or durable delegation, or applicable prior-session authorization explicitly covers this persistent route. Honor an explicit request for that topology. Risk, auditability, isolation, worktree need, or expected duration alone never authorizes user-visible task creation. For discretionary selection within broader prior authorization, choose Relay only when substantial independent work benefits from persistence, its own lifecycle, or checkout isolation. Without authorization, Relay is not eligible: choose parent-only or in-process sub-agents, or report that required persistence is blocked when no safe alternative exists. After authorization and fit, Relay applies when one or more applies:
 
 - user explicitly requests Relay, another task, background work, standalone scheduled runs, or durable delegation;
 - work may outlive current turn or should continue independently;
@@ -76,13 +76,15 @@ Create or fork persistent child tasks only when user explicitly requests another
 - responsibility changes across plan, implementation, independent review, release, or monitoring;
 - high-risk work needs recorded model, effort, evidence, and handoff gates.
 
-Unless user explicitly requests Relay, do not use it for quick answers, small sequential edits, disposable parallel reads, or model switching alone. Use product automation rules for recurring work; scheduling alone does not imply a new task per run. If explicitly required Relay controls are unavailable, show proposed route and report blocker; do not disguise sub-agents as equivalent.
+Absent an explicit topology request or lifecycle fit within broader prior authorization, do not use Relay for quick answers, small sequential edits, disposable parallel reads, nested delegation, or model switching alone. Use product automation rules for recurring work; scheduling alone does not imply a new task per run. If explicitly required Relay controls are unavailable, show proposed route and report blocker; do not disguise sub-agents as equivalent.
 
 ## 2. Choose model and effort by workload
 
 Choose the model-effort pair with the lowest expected total cost that meets the task's quality, risk, and latency requirements. Include tools, retries, repair, review, and coordination. Prefer representative workload evidence over per-token price or model size. A larger model at lower effort can be both cheaper and better. Do not force a Luna/Terra/Sol/Astra escalation ladder.
 
 First check whether runtime surfaces the current parent model and effort. If they satisfy the route, the parent may execute. Otherwise use a model-controlled in-process worker when substantive work clears coordination cost. Do not delegate merely to imitate a cheaper switch when context transfer and waiting erase the benefit. An explicit model requirement still applies. For trivial work whose parent settings are unknown, report `inherited, not surfaced`; never claim a named model or effort without runtime evidence.
+
+Choose the coordinator separately from execution and review. Routine coordination starts at Terra Medium when settings are controllable; use Astra only for a named difficult decision, not task count or waiting. Preserve explicit model/effort requirements. Inherited Astra High or Extra High is observed state, not a cost justification. If no callable control can change the current parent, state that limitation once, keep coordination compact, and route substantive work appropriately. Do not create a proxy coordinator, duplicate workers, or a persistent task merely to simulate lowering the parent's cost. Child model changes do not change the parent.
 
 Use these starting routes when comparable local results are absent. They are workload defaults, not universal benchmark rankings:
 
@@ -93,7 +95,15 @@ Use these starting routes when comparable local results are absent. They are wor
 | Sol (`gpt-5.6-sol`) | Validated workloads and research settings where its cost-quality point meets requirements; explicit exact-model requests | Medium provisionally; use workload evidence to select effort |
 | Astra (`gpt-6-astra`) | Hard coding/terminal execution, difficult diagnosis, demanding browser/visual workflows, frontier judgment, conflicting evidence and costly-to-reverse work | Medium for general complex work; High for hard terminal work; Low when relevant evidence and checks support the lower-cost route |
 
-For cost-quality evidence, runtime/API differences, or revising these defaults, read [references/model-evidence.md](references/model-evidence.md). Do not load it or browse on every routine turn. Refresh when asked, when availability/pricing changes, or when observed acceptance invalidates a route. Keep API dollars separate from Codex credits. Once difficult decisions are settled, return bounded work to a smaller route only when expected savings justify transfer.
+For cost-quality evidence, runtime/API differences, or revising these defaults, read [references/model-evidence.md](references/model-evidence.md). Do not load it or browse on every routine turn. Refresh when asked, when availability/pricing changes, or when observed acceptance invalidates a route. Keep API dollars separate from Codex credits.
+
+### Astra execution and phase boundaries
+
+Bounded implementation, known repairs, tests, and documentation use the workload defaults above. Before selecting or escalating to non-exact Astra execution, record a compact rationale: specific unresolved difficulty, why the default route is insufficient, model/effort, bounded scope, and acceptance condition that ends Astra's phase. Direct Astra routing is valid for a concrete hard problem; a failed cheaper attempt is not mandatory. For an exact requirement or prescribed availability substitution, record that basis instead; do not weaken it under this gate.
+
+A failed review, severity label, several affected files, or Astra reviewer requirement alone does not justify moving all implementation to Astra. Keep reproduced, bounded fixes with the author at the appropriate default. If diagnosis or repair design needs Astra, scope that phase to the unresolved problem and its proving checks. Frontier review requirements remain independent of the writer's model.
+
+At the recorded exit condition, and before each new repair or closeout phase, reassess the remaining work. Return bounded implementation, routine tests, and documentation to Luna Extra High or Terra Medium when savings justify transfer. Retain Astra only for a stated remaining hard problem, exact requirement, prescribed availability substitution, or concrete transfer cost that exceeds expected savings; name that reason rather than saying it already has context. Finish a small remaining check in place when a handoff would cost more. Reuse the current owner through supported model controls when practical; otherwise transfer the writer lease serially. Do not leave both writers active or create unauthorized persistent tasks.
 
 ### Exact requirements and availability
 
@@ -112,6 +122,8 @@ Record any substitution. Never silently lower a capability requirement for cost 
 
 Use the selected execution tool's model/effort schema. API documentation, a local cache, and a different host do not prove what this tool accepts. A full-history fork inherits settings; use a prompt-only or limited-history fork when an explicit override is needed. Do not claim to change the current parent's effort unless a callable runtime control actually does so.
 
+Use only model names surfaced by the selected tool and host. This skill's routes name `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`, and `gpt-6-astra`; their availability and supported efforts remain runtime checks. Collaboration full-history forks inherit model and effort and accept no override. Fresh or limited-history workers may request an override only through the selected tool's schema. Requested model or effort is a route request, not proof of execution: report runtime-verified settings, or `inherited, not surfaced` when unavailable.
+
 | Effort | Use |
 | --- | --- |
 | Low | Easily checked latency-sensitive work, or a documented lower-cost point that meets the workload's quality target, including Astra |
@@ -123,6 +135,8 @@ Use the selected execution tool's model/effort schema. API documentation, a loca
 
 Higher effort does not guarantee better results. Compare model-effort pairs at matched quality or budget, not only matching effort names. Preserve effective effort in controlled model comparisons, then tune it separately. Large or tedious work alone is not an escalation trigger. After settling a difficult decision, return to the workload default.
 
+For non-exact Astra execution or coordination, High needs the named hard-work reason above; Extra High, Max, or Ultra needs a named failure at a suitable lower Astra effort or representative workload evidence. A failed Terra/Luna review or inherited effort alone is insufficient. Record the evidence before selecting the higher effort; this does not require trying every lower setting.
+
 Ultra never grants authority for persistent tasks, fan-out, additional writers, or bypassing independent review. If its bundled behavior cannot satisfy the permitted topology and ownership, choose a compatible effort or report the constraint. Never assume that a generic effort enum means every model supports Ultra, `none`, or `minimal`.
 
 ## 4. Brief every delegated worker
@@ -133,12 +147,13 @@ Every sub-agent or Relay child receives:
 Role: <specific responsibility>
 Outcome: <one concrete result>
 Inputs: <raw paths, URLs, commits, evidence>
-Constraints: <scope, write ownership, forbidden actions>
+Route: <requested model/effort, runtime-verified model/effort or `inherited, not surfaced`, substitution evidence>
+Constraints: <scope, write ownership, forbidden actions, subdelegation boundary>
 Acceptance: <checks proving completion>
-Return: <artifact, evidence, unresolved risks, next action>
+Return: <artifact, evidence, unresolved risks, next action, transport>
 ```
 
-Do not pass summary as substitute for actual artifact. Parent checks output against acceptance gate before using it.
+Do not pass summary as substitute for actual artifact. Parent checks output against acceptance gate before using it. In-process collaboration returns through normal agent result and needs no persistent task ID. Persistent Relay must name exact parent task ID and runtime-resolved terminal messaging capability.
 
 ## 5. Run persistent Relay
 
@@ -149,8 +164,8 @@ When Relay gate passes:
 3. Resolve project ID for repository work; use projectless target otherwise.
 4. Record branch, revision, and dirty files before repository mutation.
 5. Define short route with phase, owner task, model, effort, artifact, and gate.
-6. Permit exactly one automated mutating owner per checkout, counting parent. Parent does not write while child owns checkout. Every second writer uses separate worktree plus isolated ports, databases, generated outputs, and processes. Snapshot state before lease and recheck before integration.
-7. Resolve the installed companion `agentic-executer/SKILL.md` beside this skill directory, and require every child to read its complete contents before acting. Put the resolved absolute path in the child brief; if the companion is missing, report the missing requirement before creating the child.
+6. Permit exactly one automated mutating owner per checkout, counting parent and descendants. Parent does not write while child owns checkout. Every second writer uses a separate worktree; separately isolate ports, databases, generated outputs, and processes because a worktree does not isolate them. Snapshot state before lease and recheck before integration.
+7. Resolve companion `../agentic-executer/SKILL.md` from this skill directory, and require every child to read its complete contents before acting. Put resolved path in child brief; if companion is missing, report missing requirement before creating child.
 8. Require first commentary to begin `EXECUTION_PROTOCOL: agentic-executer loaded`.
 9. Require terminal handoff through runtime-resolved background task messaging capability to exact parent task ID before child final response.
 10. Wait through runtime-resolved event-driven task wait capability. Do not poll or babysit.

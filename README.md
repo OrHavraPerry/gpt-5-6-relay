@@ -25,7 +25,7 @@ Invoke the relay with a concrete task:
 Use $gpt-5-6-relay to implement and verify: <task>
 ```
 
-Persistent Relay children load `$agentic-executer` from the sibling skill directory. Install both skills together. Invoking the router alone does not authorize new persistent tasks.
+Delegated workers load `$agentic-executer` from sibling `agentic-executer/SKILL.md`. Install both skills together. In-process workers return normally; only persistent Relay needs exact parent task ID and terminal task messaging. Invoking router alone does not authorize new persistent tasks.
 
 ## Routing policy
 
@@ -35,13 +35,13 @@ Persistent Relay children load `$agentic-executer` from the sibling skill direct
 - Sol remains useful where validated cost-quality results justify it.
 - Astra handles hard execution and frontier judgment. Start at Medium for general complex work or High for hard terminal work; use Low when relevant evidence and checks support it. Higher effort is not automatically better.
 
-Keep the smallest effective topology. Persistent tasks require an explicit user request; independent bounded work normally uses in-process agents. Preserve one writer per checkout and independent review for consequential work. Persistent handoffs are event-driven.
+Use in-process subagents by default for substantive bounded work. Honor an explicit request for a persistent task. Under broader prior-session authorization, create one only when substantial independent work benefits from persistence, its own lifecycle, or checkout isolation. Worktree isolates checkout, not ports, databases, outputs, or processes. Preserve one writer per checkout including descendants, and independent review for consequential work. Persistent handoffs are event-driven.
 
 See the skill's [routing policy](.agents/skills/gpt-5-6-relay/SKILL.md) and dated [benchmark evidence](.agents/skills/gpt-5-6-relay/references/model-evidence.md). API dollar estimates do not establish Codex credit costs. The existing skill name stays unchanged for compatibility.
 
 ## Requirements
 
-Parent execution uses the current task's tools. In-process delegation requires collaboration tools. Persistent Relay additionally requires project/task creation, task reading, terminal messaging, and event-driven wait controls. Check the selected host's model and effort support. Report a missing required gate rather than silently substituting a weaker model or different topology.
+Parent execution uses current task tools. In-process delegation requires collaboration tools. Persistent Relay additionally requires project/task creation, task reading, terminal messaging, and event-driven wait controls. Tool-supported routes are `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`, and `gpt-6-astra`, subject to selected tool and host availability. Full-history collaboration inherits settings; fresh or limited-history workers may override only through selected tool schema. Report requested versus runtime-verified settings; use `inherited, not surfaced` when unavailable. Report missing required gate rather than silently substituting weaker model or different topology.
 
 ## License
 

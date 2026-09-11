@@ -11,8 +11,9 @@ Execute the delegated phase as its accountable owner. Treat the brief's outcome,
 
 1. Read workspace instructions and every explicitly named or routed skill before taking task actions. This skill supplements those workflows; it does not replace them.
    - After reading this file, make the first child commentary update begin with `EXECUTION_PROTOCOL: agentic-executer loaded`. This visible marker is required evidence that the protocol was loaded; do not claim it without reading the complete file.
-2. Extract the outcome, canonical inputs, allowed mutations, forbidden actions, acceptance checks, required artifact, source task ID, and notification requirement.
-   - For a persistent Codex relay thread, require the brief to provide the exact parent Codex thread ID. If it is missing, report `BLOCKED` before doing task work because terminal notification cannot be guaranteed.
+2. Extract outcome, canonical inputs, allowed mutations, forbidden actions, acceptance checks, required artifact, requested model/effort, runtime-verified model/effort (or `inherited, not surfaced`), subdelegation boundary, return transport, source task ID, and notification requirement.
+   - For in-process collaboration, return through normal agent completion; no persistent task ID or background message is required.
+   - For a persistent Codex relay task, require brief to provide exact parent Codex task ID and runtime-resolved background task messaging capability. If either is missing, report `BLOCKED` before task work because terminal notification cannot be guaranteed.
 3. Inspect the starting state before writing. Preserve pre-existing changes and user-owned runtime data.
 4. Ask only when missing authority or context would materially change the result. Otherwise make conservative, reversible assumptions and record them.
 5. Never expand deployment, publication, destructive operations, credentials access, or external communication beyond the brief.
@@ -29,7 +30,8 @@ Execute the delegated phase as its accountable owner. Treat the brief's outcome,
 
 ## Protect shared work
 
-- Obey the declared writer model and worktree boundary. Never introduce a second writer into the same checkout.
+- Obey declared writer model, ownership, and worktree boundary. Never introduce second writer into same checkout, including descendants. A worktree isolates a checkout only; isolate ports, databases, generated outputs, and processes separately.
+- Subdelegate only when runtime support and shared-tree concurrency permit it, brief explicitly allows it, every descendant has bounded non-overlapping scope and return contract, and owner remains accountable. Do not create unbounded recursive fan-out.
 - Keep unrelated dirty files intact. Do not reset, discard, stage, commit, push, deploy, or restart processes unless the brief explicitly authorizes it.
 - Prefer isolated fixtures, ports, databases, and temporary state for validation.
 - Remove only artifacts created by this task, and only when their ownership is certain.
@@ -50,9 +52,9 @@ When a review finds actionable defects, return exact evidence and a failing verd
 
 ## Notify the parent
 
-Terminal notification is mandatory for relay work.
+Terminal notification is mandatory only for persistent Relay work. In-process collaboration returns through normal agent completion and must not invent persistent task ID or background messaging requirement.
 
-1. For a persistent Codex relay thread, call the runtime-resolved background task messaging capability named in the brief with the exact parent Codex thread ID supplied there. Do not assume a provider namespace. Do not use collaboration-agent messaging, a generic notify-parent helper, or the child final response as a substitute.
+1. For a persistent Codex relay task, call runtime-resolved background task messaging capability named in brief with exact parent Codex task ID supplied there. Do not assume provider namespace. Do not use collaboration-agent messaging, generic notify-parent helper, or child final response as substitute.
 2. Send this message before the child final response. Begin it with one terminal status (`DONE`, `DONE_WITH_CONCERNS`, or `BLOCKED`) and include `Protocol: agentic-executer loaded`.
 3. Do this in addition to the child task's final response; never assume the final response is surfaced automatically.
 4. Send no routine parent notifications unless the brief requests them.
